@@ -1,0 +1,1829 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#284703">
+    <meta name="description" content="FAG Agroapp - Gestão agropecuária para agricultores">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/png" href="logo.jpeg">
+    <link rel="apple-touch-icon" href="logo.jpeg">
+    <title>FAG Agroapp</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --verde-escuro: #284703;
+            --verde-medio: #555D4C;
+            --verde-claro: #88B257;
+            --branco: #ffffff;
+            --marrom: #5D4037;
+            --marrom-claro: #8D6E63;
+            --cinza-claro: #f5f5f5;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--verde-escuro) 0%, var(--verde-medio) 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* Tela de Login */
+        .login-container {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .logo-container {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo-container img {
+            width: 120px;
+            height: 120px;
+            border-radius: 20px;
+            object-fit: cover;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .logo-container h1 {
+            color: var(--branco);
+            font-size: 2rem;
+            margin-top: 15px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .logo-container p {
+            color: var(--verde-claro);
+            font-size: 1rem;
+            margin-top: 5px;
+        }
+
+        .form-container {
+            background: var(--branco);
+            padding: 30px;
+            border-radius: 20px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.3);
+        }
+
+        .form-container h2 {
+            color: var(--verde-escuro);
+            text-align: center;
+            margin-bottom: 25px;
+            font-size: 1.5rem;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            color: var(--verde-medio);
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: var(--verde-claro);
+            box-shadow: 0 0 0 3px rgba(136, 178, 87, 0.2);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--verde-claro) 0%, var(--verde-escuro) 100%);
+            color: var(--branco);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(40, 71, 3, 0.4);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--verde-medio);
+            border: 2px solid var(--verde-medio);
+        }
+
+        .btn-secondary:hover {
+            background: var(--verde-medio);
+            color: var(--branco);
+        }
+
+        .link-text {
+            text-align: center;
+            margin-top: 20px;
+            color: var(--verde-medio);
+        }
+
+        .link-text a {
+            color: var(--verde-escuro);
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        /* Dashboard */
+        .dashboard {
+            min-height: 100vh;
+            background: var(--cinza-claro);
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--verde-escuro) 0%, var(--verde-medio) 100%);
+            padding: 20px;
+            color: var(--branco);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .header img {
+            width: 45px;
+            height: 45px;
+            border-radius: 10px;
+        }
+
+        .header h1 {
+            font-size: 1.3rem;
+        }
+
+        .header-user {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .logout-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: var(--branco);
+            padding: 10px 15px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background 0.3s;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .nav-tabs {
+            display: flex;
+            background: var(--branco);
+            padding: 10px;
+            gap: 8px;
+            overflow-x: auto;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-tab {
+            flex: 1;
+            min-width: 70px;
+            padding: 12px 8px;
+            border: none;
+            background: var(--cinza-claro);
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--verde-medio);
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+
+        .nav-tab.active {
+            background: linear-gradient(135deg, var(--verde-claro) 0%, var(--verde-escuro) 100%);
+            color: var(--branco);
+        }
+
+        .nav-tab:hover:not(.active) {
+            background: #e8e8e8;
+        }
+
+        .content {
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: var(--branco);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .card-title {
+            color: var(--verde-escuro);
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-title span {
+            font-size: 1.5rem;
+        }
+
+        .btn-add {
+            background: var(--verde-claro);
+            color: var(--branco);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-add:hover {
+            background: var(--verde-escuro);
+        }
+
+        /* Tabela de Animais */
+        .animals-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 15px;
+        }
+
+        .animal-card {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 12px;
+            padding: 15px;
+            border-left: 4px solid var(--verde-claro);
+            position: relative;
+        }
+
+        .animal-card.vaccine-pending {
+            border-left-color: #f44336;
+        }
+
+        .animal-card h4 {
+            color: var(--verde-escuro);
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .animal-info {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            font-size: 0.9rem;
+            color: var(--verde-medio);
+        }
+
+        .animal-info span {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .vaccine-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+
+        .vaccine-ok {
+            background: #c8e6c9;
+            color: #2e7d32;
+        }
+
+        .vaccine-pending-badge {
+            background: #ffcdd2;
+            color: #c62828;
+        }
+
+        .animal-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .btn-small {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .btn-edit {
+            background: var(--marrom-claro);
+            color: var(--branco);
+        }
+
+        .btn-delete {
+            background: #ef5350;
+            color: var(--branco);
+        }
+
+        .btn-small:hover {
+            opacity: 0.8;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+
+        .modal {
+            background: var(--branco);
+            border-radius: 20px;
+            width: 100%;
+            max-width: 450px;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: modalSlide 0.3s ease;
+        }
+
+        @keyframes modalSlide {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, var(--verde-escuro) 0%, var(--verde-medio) 100%);
+            color: var(--branco);
+            padding: 20px;
+            border-radius: 20px 20px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h3 {
+            font-size: 1.2rem;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--branco);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 5px;
+        }
+
+        .modal-body {
+            padding: 25px;
+        }
+
+        /* Produção de Leite */
+        .milk-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .summary-card {
+            background: linear-gradient(135deg, var(--verde-claro) 0%, var(--verde-escuro) 100%);
+            color: var(--branco);
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+        }
+
+        .summary-card h3 {
+            font-size: 2rem;
+            margin-bottom: 5px;
+        }
+
+        .summary-card p {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .milk-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .milk-table th, .milk-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        .milk-table th {
+            background: var(--verde-medio);
+            color: var(--branco);
+            font-weight: 600;
+        }
+
+        .milk-table th:first-child {
+            border-radius: 10px 0 0 0;
+        }
+
+        .milk-table th:last-child {
+            border-radius: 0 10px 0 0;
+        }
+
+        .milk-table tr:hover {
+            background: #f5f5f5;
+        }
+
+        .milk-input {
+            width: 80px;
+            padding: 8px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .milk-input:focus {
+            outline: none;
+            border-color: var(--verde-claro);
+        }
+
+        /* Relatório */
+        .chart-container {
+            background: var(--branco);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .chart {
+            width: 100%;
+            height: 300px;
+            display: flex;
+            align-items: flex-end;
+            gap: 10px;
+            padding: 20px 0;
+            overflow-x: auto;
+        }
+
+        .chart-bar-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 60px;
+        }
+
+        .chart-bar {
+            width: 40px;
+            background: linear-gradient(180deg, var(--verde-claro) 0%, var(--verde-escuro) 100%);
+            border-radius: 8px 8px 0 0;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .chart-bar:hover {
+            opacity: 0.8;
+        }
+
+        .chart-bar-value {
+            position: absolute;
+            top: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--verde-escuro);
+            white-space: nowrap;
+        }
+
+        .chart-bar-label {
+            margin-top: 10px;
+            font-size: 0.8rem;
+            color: var(--verde-medio);
+            text-align: center;
+        }
+
+        .report-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .report-table th, .report-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        .report-table th {
+            background: var(--verde-escuro);
+            color: var(--branco);
+            font-weight: 600;
+        }
+
+        .report-table th:first-child {
+            border-radius: 10px 0 0 0;
+        }
+
+        .report-table th:last-child {
+            border-radius: 0 10px 0 0;
+        }
+
+        .trend-up {
+            color: #2e7d32;
+            font-weight: 600;
+        }
+
+        .trend-down {
+            color: #c62828;
+            font-weight: 600;
+        }
+
+        .trend-neutral {
+            color: var(--verde-medio);
+        }
+
+        /* Perfil */
+        .profile-header {
+            text-align: center;
+            padding: 30px 20px;
+            background: linear-gradient(135deg, var(--verde-escuro) 0%, var(--verde-medio) 100%);
+            border-radius: 15px;
+            color: var(--branco);
+            margin-bottom: 20px;
+        }
+
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            background: var(--verde-claro);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            font-size: 2.5rem;
+            color: var(--branco);
+            border: 4px solid var(--branco);
+        }
+
+        .profile-header h2 {
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+        }
+
+        .profile-header p {
+            opacity: 0.9;
+        }
+
+        .profile-info {
+            display: grid;
+            gap: 15px;
+        }
+
+        .profile-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .profile-item-label {
+            color: var(--verde-medio);
+            font-weight: 500;
+        }
+
+        .profile-item-value {
+            color: var(--verde-escuro);
+            font-weight: 600;
+        }
+
+        .profile-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .profile-stat {
+            background: linear-gradient(135deg, var(--verde-claro) 0%, var(--verde-escuro) 100%);
+            color: var(--branco);
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .profile-stat h3 {
+            font-size: 1.8rem;
+            margin-bottom: 5px;
+        }
+
+        .profile-stat p {
+            font-size: 0.8rem;
+            opacity: 0.9;
+        }
+
+        .profile-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn-profile {
+            padding: 15px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-profile-edit {
+            background: var(--marrom);
+            color: var(--branco);
+        }
+
+        .btn-profile-export {
+            background: var(--verde-claro);
+            color: var(--branco);
+        }
+
+        .btn-profile-delete {
+            background: #ef5350;
+            color: var(--branco);
+        }
+
+        .btn-profile:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+
+        /* Install Banner */
+        .install-banner {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--verde-escuro);
+            color: var(--branco);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .install-banner p {
+            font-size: 0.9rem;
+        }
+
+        .install-banner button {
+            background: var(--verde-claro);
+            color: var(--branco);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .close-banner {
+            background: transparent !important;
+            padding: 5px !important;
+            font-size: 1.2rem;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--verde-medio);
+        }
+
+        .empty-state span {
+            font-size: 4rem;
+            display: block;
+            margin-bottom: 15px;
+        }
+
+        .empty-state p {
+            font-size: 1.1rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .header {
+                flex-direction: column;
+                gap: 10px;
+                text-align: center;
+            }
+
+            .header-left {
+                flex-direction: column;
+            }
+
+            .profile-stats {
+                grid-template-columns: 1fr;
+            }
+
+            .milk-table, .report-table {
+                font-size: 0.85rem;
+            }
+
+            .milk-table th, .milk-table td,
+            .report-table th, .report-table td {
+                padding: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Tela de Login -->
+    <div id="loginScreen" class="login-container">
+        <div class="logo-container">
+            <img src="logo.jpeg" alt="FAG Agroapp Logo">
+            <h1>FAG Agroapp</h1>
+            <p>Gestao Agropecuaria Inteligente</p>
+        </div>
+
+        <div class="form-container">
+            <div id="loginForm">
+                <h2>Entrar</h2>
+                <div class="input-group">
+                    <label>CPF</label>
+                    <input type="text" id="loginCpf" placeholder="000.000.000-00" maxlength="14">
+                </div>
+                <div class="input-group">
+                    <label>Senha</label>
+                    <input type="password" id="loginPassword" placeholder="Digite sua senha">
+                </div>
+                <button class="btn btn-primary" onclick="login()">Entrar</button>
+                <p class="link-text">Nao tem conta? <a onclick="showRegister()">Criar conta</a></p>
+            </div>
+
+            <div id="registerForm" class="hidden">
+                <h2>Criar Conta</h2>
+                <div class="input-group">
+                    <label>CPF</label>
+                    <input type="text" id="regCpf" placeholder="000.000.000-00" maxlength="14">
+                </div>
+                <div class="input-group">
+                    <label>Nome Completo</label>
+                    <input type="text" id="regName" placeholder="Seu nome completo">
+                </div>
+                <div class="input-group">
+                    <label>Idade</label>
+                    <input type="number" id="regAge" placeholder="Sua idade" min="1" max="120">
+                </div>
+                <div class="input-group">
+                    <label>Sitio/Fazenda</label>
+                    <input type="text" id="regFarm" placeholder="Nome do sitio ou fazenda">
+                </div>
+                <div class="input-group">
+                    <label>Cidade</label>
+                    <input type="text" id="regCity" placeholder="Sua cidade">
+                </div>
+                <div class="input-group">
+                    <label>Senha</label>
+                    <input type="password" id="regPassword" placeholder="Crie uma senha">
+                </div>
+                <button class="btn btn-primary" onclick="register()">Criar Conta</button>
+                <p class="link-text">Ja tem conta? <a onclick="showLogin()">Entrar</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dashboard -->
+    <div id="dashboard" class="dashboard hidden">
+        <header class="header">
+            <div class="header-left">
+                <img src="logo.jpeg" alt="Logo">
+                <div>
+                    <h1>FAG Agroapp</h1>
+                    <p class="header-user" id="welcomeUser">Bem-vindo!</p>
+                </div>
+            </div>
+            <button class="logout-btn" onclick="logout()">Sair</button>
+        </header>
+
+        <nav class="nav-tabs">
+            <button class="nav-tab active" onclick="showSection('animals')">Animais</button>
+            <button class="nav-tab" onclick="showSection('vaccines')">Vacinas</button>
+            <button class="nav-tab" onclick="showSection('milk')">Producao</button>
+            <button class="nav-tab" onclick="showSection('report')">Relatorio</button>
+            <button class="nav-tab" onclick="showSection('profile')">Perfil</button>
+        </nav>
+
+        <main class="content">
+            <!-- Seção Animais -->
+            <section id="animalsSection">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title"><span>&#128016;</span> Meus Animais</h3>
+                        <button class="btn-add" onclick="openAnimalModal()">+ Adicionar</button>
+                    </div>
+                    <div id="animalsList" class="animals-grid"></div>
+                </div>
+            </section>
+
+            <!-- Seção Vacinas -->
+            <section id="vaccinesSection" class="hidden">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title"><span>&#128137;</span> Controle de Vacinas</h3>
+                    </div>
+                    <div id="vaccinesList" class="animals-grid"></div>
+                </div>
+            </section>
+
+            <!-- Seção Produção de Leite -->
+            <section id="milkSection" class="hidden">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title"><span>&#129371;</span> Producao de Leite</h3>
+                        <button class="btn-add" onclick="openMilkModal()">+ Registrar</button>
+                    </div>
+                    <div class="milk-summary">
+                        <div class="summary-card">
+                            <h3 id="todayMilk">0L</h3>
+                            <p>Hoje</p>
+                        </div>
+                        <div class="summary-card">
+                            <h3 id="weekMilk">0L</h3>
+                            <p>Esta Semana</p>
+                        </div>
+                        <div class="summary-card">
+                            <h3 id="monthMilk">0L</h3>
+                            <p>Este Mes</p>
+                        </div>
+                    </div>
+                    <div style="overflow-x: auto;">
+                        <table class="milk-table">
+                            <thead>
+                                <tr>
+                                    <th>Animal</th>
+                                    <th>Ultimo Registro</th>
+                                    <th>Litros</th>
+                                    <th>Total Mes</th>
+                                </tr>
+                            </thead>
+                            <tbody id="milkTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Seção Relatório -->
+            <section id="reportSection" class="hidden">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title"><span>&#128200;</span> Relatorio Mensal</h3>
+                    </div>
+                    <div class="chart" id="monthlyChart"></div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title"><span>&#128202;</span> Historico de Producao</h3>
+                    </div>
+                    <div style="overflow-x: auto;">
+                        <table class="report-table">
+                            <thead>
+                                <tr>
+                                    <th>Mes/Ano</th>
+                                    <th>Litros</th>
+                                    <th>Variacao</th>
+                                    <th>Tendencia</th>
+                                </tr>
+                            </thead>
+                            <tbody id="reportTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Seção Perfil -->
+            <section id="profileSection" class="hidden">
+                <div class="profile-header">
+                    <div class="profile-avatar" id="profileAvatar">&#128104;&#8205;&#127806;</div>
+                    <h2 id="profileName">Nome do Usuario</h2>
+                    <p id="profileFarm">Sitio/Fazenda</p>
+                </div>
+
+                <div class="card">
+                    <h3 class="card-title" style="margin-bottom: 20px;"><span>&#128100;</span> Informacoes Pessoais</h3>
+                    <div class="profile-info">
+                        <div class="profile-item">
+                            <span class="profile-item-label">CPF</span>
+                            <span class="profile-item-value" id="profileCpf">000.000.000-00</span>
+                        </div>
+                        <div class="profile-item">
+                            <span class="profile-item-label">Nome Completo</span>
+                            <span class="profile-item-value" id="profileFullName">Nome</span>
+                        </div>
+                        <div class="profile-item">
+                            <span class="profile-item-label">Idade</span>
+                            <span class="profile-item-value" id="profileAge">0 anos</span>
+                        </div>
+                        <div class="profile-item">
+                            <span class="profile-item-label">Sitio/Fazenda</span>
+                            <span class="profile-item-value" id="profileFarmName">Nome</span>
+                        </div>
+                        <div class="profile-item">
+                            <span class="profile-item-label">Cidade</span>
+                            <span class="profile-item-value" id="profileCity">Cidade</span>
+                        </div>
+                    </div>
+
+                    <div class="profile-stats">
+                        <div class="profile-stat">
+                            <h3 id="profileTotalAnimals">0</h3>
+                            <p>Animais</p>
+                        </div>
+                        <div class="profile-stat">
+                            <h3 id="profileTotalMilk">0L</h3>
+                            <p>Leite Total</p>
+                        </div>
+                        <div class="profile-stat">
+                            <h3 id="profileMonths">0</h3>
+                            <p>Meses Ativos</p>
+                        </div>
+                    </div>
+
+                    <div class="profile-actions">
+                        <button class="btn-profile btn-profile-edit" onclick="openEditProfileModal()">
+                            <span>&#9998;</span> Editar Perfil
+                        </button>
+                        <button class="btn-profile btn-profile-export" onclick="exportData()">
+                            <span>&#128190;</span> Exportar Dados
+                        </button>
+                        <button class="btn-profile btn-profile-delete" onclick="deleteAccount()">
+                            <span>&#128465;</span> Excluir Conta
+                        </button>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Modal Adicionar/Editar Animal -->
+    <div id="animalModal" class="modal-overlay hidden">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 id="animalModalTitle">Adicionar Animal</h3>
+                <button class="modal-close" onclick="closeAnimalModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="editAnimalId">
+                <div class="input-group">
+                    <label>Nome do Animal</label>
+                    <input type="text" id="animalName" placeholder="Ex: Mimosa">
+                </div>
+                <div class="input-group">
+                    <label>Tipo</label>
+                    <select id="animalType">
+                        <option value="cabra">Cabra</option>
+                        <option value="vaca">Vaca</option>
+                        <option value="ovelha">Ovelha</option>
+                        <option value="outro">Outro</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Idade (meses)</label>
+                    <input type="number" id="animalAge" placeholder="Ex: 24" min="0">
+                </div>
+                <div class="input-group">
+                    <label>Peso (kg)</label>
+                    <input type="number" id="animalWeight" placeholder="Ex: 45" min="0" step="0.1">
+                </div>
+                <div class="input-group">
+                    <label>Ultima Vacina</label>
+                    <input type="date" id="animalVaccine">
+                </div>
+                <div class="input-group">
+                    <label>Proxima Vacina</label>
+                    <input type="date" id="animalNextVaccine">
+                </div>
+                <button class="btn btn-primary" onclick="saveAnimal()">Salvar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Registrar Leite -->
+    <div id="milkModal" class="modal-overlay hidden">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>Registrar Producao de Leite</h3>
+                <button class="modal-close" onclick="closeMilkModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="input-group">
+                    <label>Animal</label>
+                    <select id="milkAnimal"></select>
+                </div>
+                <div class="input-group">
+                    <label>Data</label>
+                    <input type="date" id="milkDate">
+                </div>
+                <div class="input-group">
+                    <label>Quantidade (Litros)</label>
+                    <input type="number" id="milkAmount" placeholder="Ex: 2.5" min="0" step="0.1">
+                </div>
+                <button class="btn btn-primary" onclick="saveMilkRecord()">Registrar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Editar Perfil -->
+    <div id="editProfileModal" class="modal-overlay hidden">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>Editar Perfil</h3>
+                <button class="modal-close" onclick="closeEditProfileModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="input-group">
+                    <label>Nome Completo</label>
+                    <input type="text" id="editProfileName" placeholder="Seu nome completo">
+                </div>
+                <div class="input-group">
+                    <label>Idade</label>
+                    <input type="number" id="editProfileAge" placeholder="Sua idade" min="1" max="120">
+                </div>
+                <div class="input-group">
+                    <label>Sitio/Fazenda</label>
+                    <input type="text" id="editProfileFarm" placeholder="Nome do sitio ou fazenda">
+                </div>
+                <div class="input-group">
+                    <label>Cidade</label>
+                    <input type="text" id="editProfileCity" placeholder="Sua cidade">
+                </div>
+                <button class="btn btn-primary" onclick="saveProfile()">Salvar Alteracoes</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Banner de Instalação PWA -->
+    <div id="installBanner" class="install-banner hidden">
+        <p>Instale o FAG Agroapp!</p>
+        <div>
+            <button onclick="installPWA()">Instalar</button>
+            <button class="close-banner" onclick="closeInstallBanner()">&times;</button>
+        </div>
+    </div>
+
+    <script>
+        // Variáveis globais
+        let currentUser = null;
+        let deferredPrompt = null;
+
+        // Inicialização
+        document.addEventListener('DOMContentLoaded', function() {
+            // Verificar usuário logado
+            const savedUser = localStorage.getItem('fagCurrentUser');
+            if (savedUser) {
+                currentUser = JSON.parse(savedUser);
+                showDashboard();
+            }
+
+            // Máscaras de CPF
+            document.getElementById('loginCpf').addEventListener('input', formatCPF);
+            document.getElementById('regCpf').addEventListener('input', formatCPF);
+
+            // Data atual no modal de leite
+            document.getElementById('milkDate').valueAsDate = new Date();
+
+            // Service Worker
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('sw.js')
+                    .then(reg => console.log('SW registrado'))
+                    .catch(err => console.log('SW erro:', err));
+            }
+
+            // Detectar prompt de instalação PWA
+            window.addEventListener('beforeinstallprompt', (e) => {
+                e.preventDefault();
+                deferredPrompt = e;
+                document.getElementById('installBanner').classList.remove('hidden');
+            });
+        });
+
+        // Formatação de CPF
+        function formatCPF(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length > 11) value = value.slice(0, 11);
+            if (value.length > 9) {
+                value = value.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+            } else if (value.length > 6) {
+                value = value.replace(/(\d{3})(\d{3})(\d{1,3})/, '$1.$2.$3');
+            } else if (value.length > 3) {
+                value = value.replace(/(\d{3})(\d{1,3})/, '$1.$2');
+            }
+            e.target.value = value;
+        }
+
+        // Funções de Login/Registro
+        function showLogin() {
+            document.getElementById('loginForm').classList.remove('hidden');
+            document.getElementById('registerForm').classList.add('hidden');
+        }
+
+        function showRegister() {
+            document.getElementById('loginForm').classList.add('hidden');
+            document.getElementById('registerForm').classList.remove('hidden');
+        }
+
+        function login() {
+            const cpf = document.getElementById('loginCpf').value;
+            const password = document.getElementById('loginPassword').value;
+
+            if (!cpf || !password) {
+                alert('Preencha todos os campos!');
+                return;
+            }
+
+            const users = JSON.parse(localStorage.getItem('fagUsers') || '{}');
+            const user = users[cpf];
+
+            if (!user || user.password !== password) {
+                alert('CPF ou senha incorretos!');
+                return;
+            }
+
+            currentUser = user;
+            localStorage.setItem('fagCurrentUser', JSON.stringify(user));
+            showDashboard();
+        }
+
+        function register() {
+            const cpf = document.getElementById('regCpf').value;
+            const name = document.getElementById('regName').value;
+            const age = document.getElementById('regAge').value;
+            const farm = document.getElementById('regFarm').value;
+            const city = document.getElementById('regCity').value;
+            const password = document.getElementById('regPassword').value;
+
+            if (!cpf || !name || !age || !farm || !city || !password) {
+                alert('Preencha todos os campos!');
+                return;
+            }
+
+            const users = JSON.parse(localStorage.getItem('fagUsers') || '{}');
+            
+            if (users[cpf]) {
+                alert('CPF ja cadastrado!');
+                return;
+            }
+
+            const newUser = {
+                cpf,
+                name,
+                age: parseInt(age),
+                farm,
+                city,
+                password,
+                createdAt: new Date().toISOString()
+            };
+
+            users[cpf] = newUser;
+            localStorage.setItem('fagUsers', JSON.stringify(users));
+
+            // Inicializar dados do usuário
+            localStorage.setItem(`fagAnimals_${cpf}`, '[]');
+            localStorage.setItem(`fagMilkRecords_${cpf}`, '[]');
+            localStorage.setItem(`fagMonthlyReport_${cpf}`, '[]');
+
+            currentUser = newUser;
+            localStorage.setItem('fagCurrentUser', JSON.stringify(newUser));
+            
+            alert('Conta criada com sucesso!');
+            showDashboard();
+        }
+
+        function logout() {
+            currentUser = null;
+            localStorage.removeItem('fagCurrentUser');
+            document.getElementById('loginScreen').classList.remove('hidden');
+            document.getElementById('dashboard').classList.add('hidden');
+            document.getElementById('loginCpf').value = '';
+            document.getElementById('loginPassword').value = '';
+        }
+
+        function showDashboard() {
+            document.getElementById('loginScreen').classList.add('hidden');
+            document.getElementById('dashboard').classList.remove('hidden');
+            document.getElementById('welcomeUser').textContent = `Bem-vindo, ${currentUser.name.split(' ')[0]}!`;
+            
+            loadAnimals();
+            loadVaccines();
+            loadMilkProduction();
+            loadReport();
+            loadProfile();
+        }
+
+        // Navegação entre seções
+        function showSection(section) {
+            const sections = ['animals', 'vaccines', 'milk', 'report', 'profile'];
+            const tabs = document.querySelectorAll('.nav-tab');
+            
+            sections.forEach((s, i) => {
+                const el = document.getElementById(s + 'Section');
+                if (el) {
+                    if (s === section) {
+                        el.classList.remove('hidden');
+                        tabs[i].classList.add('active');
+                    } else {
+                        el.classList.add('hidden');
+                        tabs[i].classList.remove('active');
+                    }
+                }
+            });
+
+            // Atualizar dados da seção
+            if (section === 'vaccines') loadVaccines();
+            if (section === 'milk') loadMilkProduction();
+            if (section === 'report') loadReport();
+            if (section === 'profile') loadProfile();
+        }
+
+        // Funções de Animais
+        function getAnimals() {
+            return JSON.parse(localStorage.getItem(`fagAnimals_${currentUser.cpf}`) || '[]');
+        }
+
+        function saveAnimals(animals) {
+            localStorage.setItem(`fagAnimals_${currentUser.cpf}`, JSON.stringify(animals));
+        }
+
+        function loadAnimals() {
+            const animals = getAnimals();
+            const container = document.getElementById('animalsList');
+
+            if (animals.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state" style="grid-column: 1/-1;">
+                        <span>&#128016;</span>
+                        <p>Nenhum animal cadastrado ainda.<br>Adicione seu primeiro animal!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = animals.map(animal => {
+                const isVaccinePending = animal.nextVaccine && new Date(animal.nextVaccine) <= new Date();
+                return `
+                    <div class="animal-card ${isVaccinePending ? 'vaccine-pending' : ''}">
+                        <h4>${animal.name}</h4>
+                        <div class="animal-info">
+                            <span>&#128051; ${animal.type.charAt(0).toUpperCase() + animal.type.slice(1)}</span>
+                            <span>&#128197; ${animal.age} meses</span>
+                            <span>&#9878; ${animal.weight} kg</span>
+                        </div>
+                        <span class="vaccine-badge ${isVaccinePending ? 'vaccine-pending-badge' : 'vaccine-ok'}">
+                            ${isVaccinePending ? 'Vacina Pendente!' : 'Vacina em dia'}
+                        </span>
+                        <div class="animal-actions">
+                            <button class="btn-small btn-edit" onclick="editAnimal('${animal.id}')">Editar</button>
+                            <button class="btn-small btn-delete" onclick="deleteAnimal('${animal.id}')">Remover</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function openAnimalModal(editId = null) {
+            document.getElementById('animalModal').classList.remove('hidden');
+            document.getElementById('animalModalTitle').textContent = editId ? 'Editar Animal' : 'Adicionar Animal';
+            document.getElementById('editAnimalId').value = editId || '';
+
+            if (editId) {
+                const animals = getAnimals();
+                const animal = animals.find(a => a.id === editId);
+                if (animal) {
+                    document.getElementById('animalName').value = animal.name;
+                    document.getElementById('animalType').value = animal.type;
+                    document.getElementById('animalAge').value = animal.age;
+                    document.getElementById('animalWeight').value = animal.weight;
+                    document.getElementById('animalVaccine').value = animal.lastVaccine || '';
+                    document.getElementById('animalNextVaccine').value = animal.nextVaccine || '';
+                }
+            } else {
+                document.getElementById('animalName').value = '';
+                document.getElementById('animalType').value = 'cabra';
+                document.getElementById('animalAge').value = '';
+                document.getElementById('animalWeight').value = '';
+                document.getElementById('animalVaccine').value = '';
+                document.getElementById('animalNextVaccine').value = '';
+            }
+        }
+
+        function closeAnimalModal() {
+            document.getElementById('animalModal').classList.add('hidden');
+        }
+
+        function saveAnimal() {
+            const editId = document.getElementById('editAnimalId').value;
+            const name = document.getElementById('animalName').value;
+            const type = document.getElementById('animalType').value;
+            const age = document.getElementById('animalAge').value;
+            const weight = document.getElementById('animalWeight').value;
+            const lastVaccine = document.getElementById('animalVaccine').value;
+            const nextVaccine = document.getElementById('animalNextVaccine').value;
+
+            if (!name || !age || !weight) {
+                alert('Preencha os campos obrigatorios!');
+                return;
+            }
+
+            const animals = getAnimals();
+
+            if (editId) {
+                const index = animals.findIndex(a => a.id === editId);
+                if (index !== -1) {
+                    animals[index] = { ...animals[index], name, type, age: parseInt(age), weight: parseFloat(weight), lastVaccine, nextVaccine };
+                }
+            } else {
+                animals.push({
+                    id: Date.now().toString(),
+                    name,
+                    type,
+                    age: parseInt(age),
+                    weight: parseFloat(weight),
+                    lastVaccine,
+                    nextVaccine,
+                    createdAt: new Date().toISOString()
+                });
+            }
+
+            saveAnimals(animals);
+            loadAnimals();
+            closeAnimalModal();
+        }
+
+        function editAnimal(id) {
+            openAnimalModal(id);
+        }
+
+        function deleteAnimal(id) {
+            if (!confirm('Tem certeza que deseja remover este animal?')) return;
+            
+            let animals = getAnimals();
+            animals = animals.filter(a => a.id !== id);
+            saveAnimals(animals);
+            loadAnimals();
+        }
+
+        // Funções de Vacinas
+        function loadVaccines() {
+            const animals = getAnimals();
+            const container = document.getElementById('vaccinesList');
+
+            if (animals.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state" style="grid-column: 1/-1;">
+                        <span>&#128137;</span>
+                        <p>Nenhum animal cadastrado.<br>Adicione animais para controlar vacinas.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const sorted = [...animals].sort((a, b) => {
+                if (!a.nextVaccine) return 1;
+                if (!b.nextVaccine) return -1;
+                return new Date(a.nextVaccine) - new Date(b.nextVaccine);
+            });
+
+            container.innerHTML = sorted.map(animal => {
+                const isVaccinePending = animal.nextVaccine && new Date(animal.nextVaccine) <= new Date();
+                const nextVaccineText = animal.nextVaccine 
+                    ? new Date(animal.nextVaccine).toLocaleDateString('pt-BR')
+                    : 'Nao definida';
+                const lastVaccineText = animal.lastVaccine
+                    ? new Date(animal.lastVaccine).toLocaleDateString('pt-BR')
+                    : 'Nunca vacinado';
+
+                return `
+                    <div class="animal-card ${isVaccinePending ? 'vaccine-pending' : ''}">
+                        <h4>${animal.name}</h4>
+                        <div class="animal-info">
+                            <span>&#128051; ${animal.type.charAt(0).toUpperCase() + animal.type.slice(1)}</span>
+                            <span>&#128197; Ultima: ${lastVaccineText}</span>
+                            <span>&#9200; Proxima: ${nextVaccineText}</span>
+                        </div>
+                        <span class="vaccine-badge ${isVaccinePending ? 'vaccine-pending-badge' : 'vaccine-ok'}">
+                            ${isVaccinePending ? 'VACINAR AGORA!' : 'Em dia'}
+                        </span>
+                        <div class="animal-actions">
+                            <button class="btn-small btn-edit" onclick="editAnimal('${animal.id}')">Atualizar Vacina</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Funções de Produção de Leite
+        function getMilkRecords() {
+            return JSON.parse(localStorage.getItem(`fagMilkRecords_${currentUser.cpf}`) || '[]');
+        }
+
+        function saveMilkRecords(records) {
+            localStorage.setItem(`fagMilkRecords_${currentUser.cpf}`, JSON.stringify(records));
+        }
+
+        function loadMilkProduction() {
+            const animals = getAnimals();
+            const records = getMilkRecords();
+            
+            // Atualizar select do modal
+            const select = document.getElementById('milkAnimal');
+            select.innerHTML = animals.length === 0 
+                ? '<option value="">Nenhum animal cadastrado</option>'
+                : animals.map(a => `<option value="${a.id}">${a.name} (${a.type})</option>`).join('');
+
+            // Calcular totais
+            const today = new Date().toISOString().split('T')[0];
+            const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+            const monthStart = new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString().split('T')[0];
+
+            const todayTotal = records.filter(r => r.date === today).reduce((sum, r) => sum + r.amount, 0);
+            const weekTotal = records.filter(r => r.date >= weekAgo).reduce((sum, r) => sum + r.amount, 0);
+            const monthTotal = records.filter(r => r.date >= monthStart).reduce((sum, r) => sum + r.amount, 0);
+
+            document.getElementById('todayMilk').textContent = todayTotal.toFixed(1) + 'L';
+            document.getElementById('weekMilk').textContent = weekTotal.toFixed(1) + 'L';
+            document.getElementById('monthMilk').textContent = monthTotal.toFixed(1) + 'L';
+
+            // Tabela de produção por animal
+            const tableBody = document.getElementById('milkTableBody');
+            
+            if (animals.length === 0) {
+                tableBody.innerHTML = '<tr><td colspan="4" style="text-align: center; padding: 30px;">Nenhum animal cadastrado</td></tr>';
+                return;
+            }
+
+            tableBody.innerHTML = animals.map(animal => {
+                const animalRecords = records.filter(r => r.animalId === animal.id);
+                const lastRecord = animalRecords.sort((a, b) => new Date(b.date) - new Date(a.date))[0];
+                const monthRecords = animalRecords.filter(r => r.date >= monthStart);
+                const monthTotal = monthRecords.reduce((sum, r) => sum + r.amount, 0);
+
+                return `
+                    <tr>
+                        <td><strong>${animal.name}</strong></td>
+                        <td>${lastRecord ? new Date(lastRecord.date).toLocaleDateString('pt-BR') : '-'}</td>
+                        <td>${lastRecord ? lastRecord.amount.toFixed(1) + 'L' : '-'}</td>
+                        <td><strong>${monthTotal.toFixed(1)}L</strong></td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function openMilkModal() {
+            const animals = getAnimals();
+            if (animals.length === 0) {
+                alert('Cadastre animais antes de registrar producao!');
+                return;
+            }
+            document.getElementById('milkModal').classList.remove('hidden');
+            document.getElementById('milkDate').valueAsDate = new Date();
+            document.getElementById('milkAmount').value = '';
+        }
+
+        function closeMilkModal() {
+            document.getElementById('milkModal').classList.add('hidden');
+        }
+
+        function saveMilkRecord() {
+            const animalId = document.getElementById('milkAnimal').value;
+            const date = document.getElementById('milkDate').value;
+            const amount = parseFloat(document.getElementById('milkAmount').value);
+
+            if (!animalId || !date || !amount) {
+                alert('Preencha todos os campos!');
+                return;
+            }
+
+            const records = getMilkRecords();
+            records.push({
+                id: Date.now().toString(),
+                animalId,
+                date,
+                amount,
+                createdAt: new Date().toISOString()
+            });
+
+            saveMilkRecords(records);
+            updateMonthlyReport();
+            loadMilkProduction();
+            closeMilkModal();
+        }
+
+        // Funções de Relatório
+        function getMonthlyReport() {
+            return JSON.parse(localStorage.getItem(`fagMonthlyReport_${currentUser.cpf}`) || '[]');
+        }
+
+        function saveMonthlyReport(report) {
+            localStorage.setItem(`fagMonthlyReport_${currentUser.cpf}`, JSON.stringify(report));
+        }
+
+        function updateMonthlyReport() {
+            const records = getMilkRecords();
+            const report = {};
+
+            records.forEach(record => {
+                const monthKey = record.date.substring(0, 7); // YYYY-MM
+                if (!report[monthKey]) {
+                    report[monthKey] = 0;
+                }
+                report[monthKey] += record.amount;
+            });
+
+            const reportArray = Object.entries(report)
+                .map(([month, total]) => ({ month, total }))
+                .sort((a, b) => a.month.localeCompare(b.month));
+
+            saveMonthlyReport(reportArray);
+        }
+
+        function loadReport() {
+            updateMonthlyReport();
+            const report = getMonthlyReport();
+            
+            // Gráfico
+            const chartContainer = document.getElementById('monthlyChart');
+            
+            if (report.length === 0) {
+                chartContainer.innerHTML = `
+                    <div class="empty-state" style="width: 100%;">
+                        <span>&#128200;</span>
+                        <p>Nenhum dado de producao ainda.<br>Registre a producao de leite para ver o grafico.</p>
+                    </div>
+                `;
+            } else {
+                const maxValue = Math.max(...report.map(r => r.total));
+                const last12 = report.slice(-12);
+
+                chartContainer.innerHTML = last12.map(item => {
+                    const height = maxValue > 0 ? (item.total / maxValue) * 200 : 0;
+                    const [year, month] = item.month.split('-');
+                    const monthNames = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
+                    const label = `${monthNames[parseInt(month) - 1]}/${year.slice(2)}`;
+
+                    return `
+                        <div class="chart-bar-container">
+                            <div class="chart-bar" style="height: ${Math.max(height, 5)}px;">
+                                <span class="chart-bar-value">${item.total.toFixed(0)}L</span>
+                            </div>
+                            <span class="chart-bar-label">${label}</span>
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            // Tabela
+            const tableBody = document.getElementById('reportTableBody');
+            
+            if (report.length === 0) {
+                tableBody.innerHTML = '<tr><td colspan="4" style="text-align: center; padding: 30px;">Nenhum dado disponivel</td></tr>';
+                return;
+            }
+
+            const reversed = [...report].reverse();
+            tableBody.innerHTML = reversed.map((item, index) => {
+                const [year, month] = item.month.split('-');
+                const monthNames = ['Janeiro', 'Fevereiro', 'Marco', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+                const label = `${monthNames[parseInt(month) - 1]}/${year}`;
+
+                let variation = 0;
+                let trend = 'trend-neutral';
+                let trendIcon = '&#8594;';
+
+                if (index < reversed.length - 1) {
+                    const prevTotal = reversed[index + 1].total;
+                    variation = prevTotal > 0 ? ((item.total - prevTotal) / prevTotal) * 100 : 0;
+                    
+                    if (variation > 0) {
+                        trend = 'trend-up';
+                        trendIcon = '&#8593;';
+                    } else if (variation < 0) {
+                        trend = 'trend-down';
+                        trendIcon = '&#8595;';
+                    }
+                }
+
+                return `
+                    <tr>
+                        <td>${label}</td>
+                        <td><strong>${item.total.toFixed(1)}L</strong></td>
+                        <td class="${trend}">${variation >= 0 ? '+' : ''}${variation.toFixed(1)}%</td>
+                        <td class="${trend}">${trendIcon} ${variation > 0 ? 'Avanco' : variation < 0 ? 'Queda' : 'Estavel'}</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // Funções de Perfil
+        function loadProfile() {
+            if (!currentUser) return;
+
+            document.getElementById('profileName').textContent = currentUser.name;
+            document.getElementById('profileFarm').textContent = currentUser.farm;
+            document.getElementById('profileCpf').textContent = currentUser.cpf;
+            document.getElementById('profileFullName').textContent = currentUser.name;
+            document.getElementById('profileAge').textContent = currentUser.age + ' anos';
+            document.getElementById('profileFarmName').textContent = currentUser.farm;
+            document.getElementById('profileCity').textContent = currentUser.city;
+
+            // Estatísticas
+            const animals = getAnimals();
+            const records = getMilkRecords();
+            const report = getMonthlyReport();
+            const totalMilk = records.reduce((sum, r) => sum + r.amount, 0);
+
+            document.getElementById('profileTotalAnimals').textContent = animals.length;
+            document.getElementById('profileTotalMilk').textContent = totalMilk.toFixed(0) + 'L';
+            document.getElementById('profileMonths').textContent = report.length;
+        }
+
+        function openEditProfileModal() {
+            document.getElementById('editProfileModal').classList.remove('hidden');
+            document.getElementById('editProfileName').value = currentUser.name;
+            document.getElementById('editProfileAge').value = currentUser.age;
+            document.getElementById('editProfileFarm').value = currentUser.farm;
+            document.getElementById('editProfileCity').value = currentUser.city;
+        }
+
+        function closeEditProfileModal() {
+            document.getElementById('editProfileModal').classList.add('hidden');
+        }
+
+        function saveProfile() {
+            const name = document.getElementById('editProfileName').value;
+            const age = document.getElementById('editProfileAge').value;
+            const farm = document.getElementById('editProfileFarm').value;
+            const city = document.getElementById('editProfileCity').value;
+
+            if (!name || !age || !farm || !city) {
+                alert('Preencha todos os campos!');
+                return;
+            }
+
+            currentUser.name = name;
+            currentUser.age = parseInt(age);
+            currentUser.farm = farm;
+            currentUser.city = city;
+
+            // Atualizar no storage
+            const users = JSON.parse(localStorage.getItem('fagUsers') || '{}');
+            users[currentUser.cpf] = currentUser;
+            localStorage.setItem('fagUsers', JSON.stringify(users));
+            localStorage.setItem('fagCurrentUser', JSON.stringify(currentUser));
+
+            document.getElementById('welcomeUser').textContent = `Bem-vindo, ${currentUser.name.split(' ')[0]}!`;
+            
+            loadProfile();
+            closeEditProfileModal();
+            alert('Perfil atualizado com sucesso!');
+        }
+
+        function exportData() {
+            const data = {
+                user: currentUser,
+                animals: getAnimals(),
+                milkRecords: getMilkRecords(),
+                monthlyReport: getMonthlyReport(),
+                exportedAt: new Date().toISOString()
+            };
+
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `fag_agroapp_${currentUser.cpf.replace(/\D/g, '')}_${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function deleteAccount() {
+            if (!confirm('ATENCAO: Esta acao ira excluir permanentemente sua conta e todos os dados. Deseja continuar?')) return;
+            if (!confirm('Tem certeza ABSOLUTA? Esta acao NAO pode ser desfeita!')) return;
+
+            const cpf = currentUser.cpf;
+            
+            // Remover dados do usuário
+            localStorage.removeItem(`fagAnimals_${cpf}`);
+            localStorage.removeItem(`fagMilkRecords_${cpf}`);
+            localStorage.removeItem(`fagMonthlyReport_${cpf}`);
+            
+            // Remover usuário da lista
+            const users = JSON.parse(localStorage.getItem('fagUsers') || '{}');
+            delete users[cpf];
+            localStorage.setItem('fagUsers', JSON.stringify(users));
+
+            alert('Conta excluida com sucesso.');
+            logout();
+        }
+
+        // PWA
+        function installPWA() {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        console.log('PWA instalado');
+                    }
+                    deferredPrompt = null;
+                    document.getElementById('installBanner').classList.add('hidden');
+                });
+            }
+        }
+
+        function closeInstallBanner() {
+            document.getElementById('installBanner').classList.add('hidden');
+        }
+    </script>
+</body>
+</html>
